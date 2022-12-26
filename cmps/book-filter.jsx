@@ -1,11 +1,16 @@
-const { useState, useEffect } = React
+const { useState, useEffect, useRef } = React
 import { bookService } from './../services/book.service.js';
 
 
 export function BookFilter({onSetFilter}){
 
   const [filterByToEdit, setFilterByToEdit]= useState(bookService.getDefaultFilter())
-console.log(filterByToEdit)
+  const elInputRef = useRef(null)
+// console.log(filterByToEdit)
+
+useEffect(() => {
+  elInputRef.current.focus()
+}, [])
 
 useEffect(() => {
   onSetFilter(filterByToEdit)
@@ -31,13 +36,14 @@ function onSubmitFilter(ev){
                 <label htmlFor="authors">Author</label>
                 <input type="text"
                         onChange={handleChange}
+                        ref={elInputRef}
                         id="authors"
                         name="txt"
                         placeholder='By authors' 
                         value={filterByToEdit.txt}/>
                 <label htmlFor="minPrice">Min price</label>
                 <input type="number"
-                        onChange={handleChange} 
+                        onChange={handleChange}
                         id="minPrice"
                         name="minPrice"
                         placeholder='By min price' 

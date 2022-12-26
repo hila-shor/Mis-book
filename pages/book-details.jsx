@@ -1,7 +1,29 @@
+const { useEffect, useState } = React
+const { useParams, useNavigate, Link } = ReactRouterDOM
 
+import { bookService } from "../services/book.service.js"
 
-export function BookDetails({book, onGoBack}){
+export function BookDetails(){
+  const [book, setBook] = useState(null)
+  const params = useParams()
+  const navigate = useNavigate()
 
+  useEffect(() => {
+    loadBook()
+}, [])
+
+function loadBook() {
+  bookService.get(params.bookId)
+      .then((book) => setBook(book))
+      .catch((err) => {
+          console.log('Had issues in book details', err)
+          navigate('/books')
+      })
+}
+function onGoBack() {
+  navigate('/books')
+}
+  if (!book) return <div>loading..</div>
   return <section className='book-details'>
             <h2>{book.title}</h2>
             <h3>{`€ ${book.listPrice.amount} `} </h3>

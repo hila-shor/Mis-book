@@ -14,7 +14,6 @@ export function BookIndex(){
 
   const [filterBy, setFilterBy] = useState(bookService.getDefaultFilter())
   const [books, setBooks] = useState([])
-  const [selectedBook, setSelectedBook] = useState(null)
   const [userMsg, setUserMsg] = useState('')
 
   
@@ -24,7 +23,8 @@ export function BookIndex(){
 
 
 function loadBooks() {
-  bookService.query(filterBy).then((booksToUpdate) => setBooks(booksToUpdate))
+  // bookService.query(filterBy).then((booksToUpdate) => setBooks(booksToUpdate))
+  bookService.query(filterBy).then(setBooks)
 }
 
 function onSetFilter(filterBy){
@@ -41,13 +41,6 @@ function onRemoveBook(bookId) {
   })
 }
 
-function onSelectBook(bookId) {
-  // setSelectedBook(book)
-  bookService.get(bookId).then((book) => {
-      setSelectedBook(book)
-      console.log('book selected', book)
-  })
-}
 function flashMsg(msg) {
   setUserMsg(msg)
   setTimeout(() => {
@@ -55,16 +48,16 @@ function flashMsg(msg) {
   }, 3000)
 }
 
-  return ( <section className="book-index">
+  return  <section className="book-index">
               
-              { selectedBook && <BookDetails book={selectedBook} onGoBack=
-              {()=>setSelectedBook(null)} />}
-              {!selectedBook && 
+              {/* { selectedBook && <BookDetails book={selectedBook} onGoBack=
+              {()=>setSelectedBook(null)} />} */}
+              
               <div>
                 <h2>Books list</h2>
                 <BookFilter onSetFilter={onSetFilter}/>
-                <BookList books={books} onRemoveBook={onRemoveBook} onSelectBook={onSelectBook} />
-              </div>}
+                <BookList books={books} onRemoveBook={onRemoveBook}/>
+              </div>
               {UserMsg && <UserMsg msg={userMsg}/>}
-          </section>)
+          </section>
 }
