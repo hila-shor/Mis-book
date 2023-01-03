@@ -5,9 +5,10 @@
 }
 
 .container {
-  max-width: 800px;
+  max-width: 1000px;
   padding: 1em;
   margin: auto;
+  text-align: center;
 }
 
 

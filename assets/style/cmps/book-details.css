@@ -1,0 +1,39 @@
+.red{
+  color:red;
+
+}
+.green{
+  color:green;
+
+}
+
+.serious{
+  color:red;
+}
+.descent{
+  color: orange;
+}
+.light{
+  color: green;
+}
+
+.on-sale{
+  width: 3rem;
+  height: 3rem;
+
+}
+
+.reviews > h3{
+  text-align: start;
+  margin-inline-start: 2rem;
+}
+.next-prev{
+  justify-content: space-between;
+}
+
+.next-prev>* {
+  border: 1px solid;
+  border-radius: 12px;
+  padding: 1rem;
+
+}

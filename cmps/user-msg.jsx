@@ -1,7 +1,33 @@
+const {useState , useEffect , useRef} = React
 
-export function UserMsg({msg}){
- 
-  return <div className="user-msg success">
-            {msg}
+import { eventBusService } from "../services/event-bus.service.js"
+
+export function UserMsg(){
+  
+  const [msg , setMsg] =useState(null)
+  const timeoutIdRef = useRef()
+
+  useEffect(() => {
+    const unsubscribe = eventBusService.on('show-user-msg', (msg) =>{
+      console.log(msg)
+      setMsg(msg)
+      if(timeoutIdRef.current){
+        clearTimeout(timeoutIdRef.current)
+        timeoutIdRef.current = null
+      }
+      timeoutIdRef.current = setTimeout(onCloseMsg,1000)
+    })
+    return unsubscribe
+  }, [])
+
+  
+  function onCloseMsg() {
+    setMsg(null)
+  }
+if(!msg ) return <span>loading...</span>
+  return <div className={"user-msg "}>
+            {msg.txt}
+            <button className="close-msg-btn" onClick={onCloseMsg}>x</button> 
+            if 
         </div>
 }

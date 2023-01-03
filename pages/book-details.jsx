@@ -1,34 +1,118 @@
 const { useEffect, useState } = React
 const { useParams, useNavigate, Link } = ReactRouterDOM
 
+import { LongTxt } from "../cmps/long-txt.jsx"
+import { AddReview } from "../cmps/add-review.jsx"
+import { ReviewList } from "../cmps/review-list.jsx"
 import { bookService } from "../services/book.service.js"
+import { showSuccessMsg , showErrorMsg  } from "../services/event-bus.service.js"
 
 export function BookDetails(){
   const [book, setBook] = useState(null)
+  const [nextBookId, setNextBookId] = useState(null)
+  const [prevBookId, setPrevBookId] = useState(null)
   const params = useParams()
+  // const { bookId } = useParams()
   const navigate = useNavigate()
 
   useEffect(() => {
     loadBook()
-}, [])
+}, [params.bookId])
 
 function loadBook() {
   bookService.get(params.bookId)
-      .then((book) => setBook(book))
+      .then((book) =>{
+        setBook(book)
+        console.log('load book from book preview', book)
+      } )
       .catch((err) => {
           console.log('Had issues in book details', err)
           navigate('/books')
       })
+
+  bookService.getNextBookId(params.bookId)
+      .then(setNextBookId)
+
+  bookService.getPrevBookId(params.bookId)
+      .then(setPrevBookId)
+
 }
+function getPublishDate(){
+  console.log(book.publishedDate)
+  let currYear = new Date().getFullYear()
+  console.log(currYear)
+  if (currYear - book.publishedDate > 10)return 'Vintage'
+  if (currYear - book.publishedDate < 1)return 'New'
+}
+
+function getReadingLevel(){
+  console.log(book)
+  var pageCount= book.pageCount
+  if (pageCount>500)return "Serious"
+  if (pageCount>200)return  "Descent"
+  if (pageCount<100)return   "Light"
+}
+// var readingLevelClass= setReadingLevel().toLocaleLowerCase()
+function getPriceClass() {
+  
+  if (book.listPrice.amount >= 150) return 'red'
+  else if (book.listPrice.amount <= 100) return 'green'
+  else return ''
+}
+
 function onGoBack() {
   navigate('/books')
+}
+
+function onSaveReview (review){
+  console.log(book.id)
+  console.log(review)
+  bookService.addReview(review, book.id).then((updatedBook) => {
+    showSuccessMsg('Book review added')
+    setBook({ ...updatedBook })
+  }).catch((err) => {
+    console.log('Had issues adding review', err)
+    showErrorMsg('Could not add book review')
+  })
+}
+
+
+function onRemoveReview(reviewId) {
+  console.log('from onRemoveReview(reviewId) from book-details ')
+  bookService.removeReview(book.id, reviewId).then((updatedBook) => { 
+      showSuccessMsg('Book review removed')
+      setBook({ ...updatedBook})
+  })
 }
   if (!book) return <div>loading..</div>
   return <section className='book-details'>
             <h2>{book.title}</h2>
-            <h3>{`€ ${book.listPrice.amount} `} </h3>
-            <img src={book.thumbnail}/>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident voluptatum id, ducimus neque officia nisi excepturi dolores voluptates possimus modi officiis minus ipsum minima quod, esse exercitationem aspernatur, repellendus perspiciatis!</p>
+            {book.listPrice.isOnSale && <img className="on-sale" src="assets/img/sale.jpg"/>}
+            <h3 className={getPriceClass()}>{`€ ${book.listPrice.amount} `} </h3>
+            <div className="flex flex-row">
+              <img src={book.thumbnail}/> 
+
+
+              <div className="reviews">
+                <AddReview onSaveReview={onSaveReview} />
+                {(!book.reviews) && <span className="title">No reviews yet</span>}
+                {book.reviews && <h3>{book.reviews.length} Reviews</h3>}
+                {book.reviews && <ReviewList book={book} onRemoveReview={onRemoveReview}/>}
+              </div>
+            </div>
+            
+
+
+
+            <h2 className={getReadingLevel().toLocaleLowerCase()}>{getReadingLevel()} Reading</h2>
+            <h4 className="published-date">{getPublishDate()}</h4>
+            <LongTxt txt={book.description} length={100}/>
             <button onClick={onGoBack}>Go back</button>
+            <Link className= "edit-btn" to={`/books/edit/${book.id}`}>Edit book</Link>
+            <hr />
+            <div className="next-prev container flex">
+              <Link className="next-book" to={`/books/${nextBookId}`}>Next book</Link>
+              <Link className="prev-book" to={`/books/${nextBookId}`}>prev book</Link>
+          </div>
         </section>
 }

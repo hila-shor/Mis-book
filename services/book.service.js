@@ -1,5 +1,6 @@
 import { utilService } from './util.service.js'
 import { storageService } from './async-storage.service.js'
+import { StorageService } from './storage.service.js'
 
 const BOOK_KEY = 'bookDB'
 _createBooks()
@@ -9,23 +10,29 @@ export const bookService = {
   query,
   get,
   remove,
-  // save,
-  // getEmptyCar,
+  save,
+  getEmptyBook,
   getDefaultFilter,
+  getDefaultReview,
+  addReview,
+  removeReview,
+  getNextBookId,
+  getPrevBookId
 }
 
 function query(filterBy = getDefaultFilter()) {
   return storageService.query(BOOK_KEY)
     .then(books => {
-      console.log(books[0].authors)
+      console.log('query from service title ,', books[0].title)
       console.log(books[0].listPrice.amount)
+
       //FILTERS
       if (filterBy.txt) {
         const regex = new RegExp(filterBy.txt, 'i')
-        books = books.filter(book => regex.test(book.authors))
+        books = books.filter(book => regex.test(book.title))
       }
-      if (filterBy.minPrice) {
-        books = books.filter(book => book.listPrice.amount >= filterBy.minPrice)
+      if (filterBy.maxPrice) {
+        books = books.filter(book => book.listPrice.amount <= filterBy.maxPrice)
       }
       console.log(books)
       return books
@@ -37,47 +44,73 @@ function get(bookId) {
   return storageService.get(BOOK_KEY, bookId)
   // return axios.get(CAR_KEY, carId)
 }
+function getNextBookId(bookId) {
+  return storageService.query(BOOK_KEY)
+    .then(books => {
+      var idx = books.findIndex(book => book.id === bookId)
+      if (idx === books.length - 1) idx = -1
+      return books[idx + 1].id
+    })
+}
+
+function getPrevBookId(bookId) {
+  return storageService.query(BOOK_KEY)
+    .then(books => {
+      var idx = books.findIndex(book => book.id === bookId)
+      if (idx === 0) idx = books.length
+      return books[idx - 1].id
+    })
+}
+
 
 function remove(bookId) {
   return storageService.remove(BOOK_KEY, bookId)
 }
 
-// function save(car) {
-//   if (car.id) {
-//     return storageService.put(CAR_KEY, car)
-//   } else {
-//     return storageService.post(CAR_KEY, car)
-//   }
-// }
+function save(book) {
+  if (book.id) {
+    return storageService.put(BOOK_KEY, book)
+  } else {
+    return storageService.post(BOOK_KEY, book)
+  }
+}
 
-function getEmptyBook(authors = '', maxPrice = '') {
-  return { id: '', authors, maxPrice }
+function getEmptyBook(title = '', maxPrice = '') {
+  return { title: '', maxPrice: '' }
 }
 
 function getDefaultFilter() {
-  return { txt: '', minPrice: '' }
+  return { txt: '', maxPrice: '' }
 }
 
+function getDefaultReview() {
+  return { fullName: '', rating: 0, readAt: '', id: '' }
+}
 
+function addReview(reviewToAdd, bookId) {
+  reviewToAdd.id = utilService.makeId()
+  return get(bookId).then((book) => {
+    if (book.reviews) book.reviews.push(reviewToAdd)
+    else book.reviews = [reviewToAdd]
+    console.log('add review , book ', book)
+    return save(book)
+  })
+    .catch((err) => {
+      console.log('Had issues to save review to book', err)
+    })
+}
 
-// function _createBook() {
-//   const book = getEmptyCar()
-//   book.id = utilService.makeId()
-//   return car
-// }
-
-// book = {
-//   "id": "OXeMG8wNskc",
-//   "title": "metus hendrerit",
-//   "description": "placerat nisi sodales suscipit tellus",
-//   "thumbnail": "http://ca.org/books-photos/20.jpg",
-//   "listPrice": {
-//     "amount": 109,
-//     "currencyCode": "EUR",
-//     "isOnSale": false
-//   }
-// }
-
+function removeReview(bookId, reviewId) {
+  return get(bookId).then((book) => {
+    const updatedReviews = book.reviews.filter((review) => review.id !== reviewId)
+    book.reviews = updatedReviews
+    console.log('remove review , upodate book reviews', book)
+    return save(book)
+  })
+    .catch((err) => {
+      console.log('Had issues to delete review to book', err)
+    })
+}
 function _createBooks() {
   let books = utilService.loadFromStorage(BOOK_KEY)
   if (!books || !books.length) {

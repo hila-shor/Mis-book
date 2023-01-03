@@ -3,8 +3,10 @@
 .book-list {
   padding: 15px 0 0;
   list-style: none;
+  width: 1000px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  
   gap: 15px;
 }
 
