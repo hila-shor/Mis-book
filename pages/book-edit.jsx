@@ -24,7 +24,12 @@ function loadBook() {
     })
 }
 
-console.log('book to Edit from BookEdit :>> ', bookToEdit );
+// console.log('book to Edit from BookEdit :>> ', bookToEdit );
+
+  function onAddBookFromGoogle(){
+    navigate('/books/add')
+  }
+
 
   function onSaveBook(ev){ 
     ev.preventDefault()
@@ -50,6 +55,7 @@ console.log('book to Edit from BookEdit :>> ', bookToEdit );
   return <section className="book-edit flex">
             {bookToEdit && <img src={bookToEdit.thumbnail}/>}
             {!bookToEdit.thumbnail && <img className="default-img" src="assets/img/book3.jpg"/>}
+            <button onClick={() => onAddBookFromGoogle()}>Add From Google</button>
             <div className="form-container">
               <form onSubmit={onSaveBook}>
 
