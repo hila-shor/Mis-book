@@ -139,7 +139,7 @@ function loadBook() {
                 />
             
               
-                <label className="flex" htmlFor="amount">Price: </label>
+                {/* <label className="flex" htmlFor="amount">Price: </label>
                 <input type="number"
                     name="amount"
                     id="amount"
@@ -147,7 +147,7 @@ function loadBook() {
                     value={bookToEdit.listPrice.amount}
                     onChange={handleChange}
                 />
-            
+             */}
             
                 <label className="flex" htmlFor="currencyCode">Currency: </label>
                 <input type="text"
