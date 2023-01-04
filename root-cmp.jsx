@@ -13,6 +13,7 @@ import { UserMsg } from './cmps/user-msg.jsx'
 import {Home} from './pages/home.jsx'
 import { AboutUs } from './pages/about-us.jsx';
 import { BookEdit } from "./pages/book-edit.jsx"
+import { AddBook } from "./pages/add-book.jsx"
 import { BookIndex } from './pages/book-index.jsx';
 import { BookDetails } from "./pages/book-details.jsx"
 
@@ -38,10 +39,12 @@ export function App() {
                             <Route element={<BookEdit />} path="/books/edit" />
                             <Route element={<BookEdit />} path="/books/edit/:bookId" />
                             <Route element={<BookDetails />} path="/books/:bookId" />
-
+                            <Route element={<AddBook />} path="/books/add"  />
                         </Routes>
                     </main>
                     <UserMsg />
                 </section>
             </Router>
 }
+
+// AIzaSyAhCyOUZ_UgXoR9FICIUn-j8mG2yMNHvKY      APIkey 

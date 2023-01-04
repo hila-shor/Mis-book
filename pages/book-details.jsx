@@ -16,6 +16,7 @@ export function BookDetails(){
   const navigate = useNavigate()
 
   useEffect(() => {
+    console.log('Hello')
     loadBook()
 }, [params.bookId])
 
@@ -52,7 +53,7 @@ function getReadingLevel(){
   if (pageCount>200)return  "Descent"
   if (pageCount<100)return   "Light"
 }
-// var readingLevelClass= setReadingLevel().toLocaleLowerCase()
+// var readingLevelClass= getReadingLevel().toLowerCase()
 function getPriceClass() {
   
   if (book.listPrice.amount >= 150) return 'red'
@@ -85,9 +86,9 @@ function onRemoveReview(reviewId) {
   })
 }
   if (!book) return <div>loading..</div>
-  return <section className='book-details'>
+  return <section className='book-details animate__animated animate__fadeInLeft'>
             <h2>{book.title}</h2>
-            {book.listPrice.isOnSale && <img className="on-sale" src="assets/img/sale.jpg"/>}
+            {book.listPrice.isOnSale && <img className="on-sale animate__animated animate__wobble animate__delay-1s" src="assets/img/sale.jpg"/>}
             <h3 className={getPriceClass()}>{`€ ${book.listPrice.amount} `} </h3>
             <div className="flex flex-row">
               <img src={book.thumbnail}/> 
@@ -101,10 +102,7 @@ function onRemoveReview(reviewId) {
               </div>
             </div>
             
-
-
-
-            <h2 className={getReadingLevel().toLocaleLowerCase()}>{getReadingLevel()} Reading</h2>
+            {getReadingLevel() && <h2 className={getReadingLevel().toLowerCase()}>{getReadingLevel()} Reading</h2>}
             <h4 className="published-date">{getPublishDate()}</h4>
             <LongTxt txt={book.description} length={100}/>
             <button onClick={onGoBack}>Go back</button>
@@ -112,7 +110,7 @@ function onRemoveReview(reviewId) {
             <hr />
             <div className="next-prev container flex">
               <Link className="next-book" to={`/books/${nextBookId}`}>Next book</Link>
-              <Link className="prev-book" to={`/books/${nextBookId}`}>prev book</Link>
+              <Link className="prev-book" to={`/books/${prevBookId}`}>prev book</Link>
           </div>
         </section>
 }

@@ -9,7 +9,7 @@ export function UserMsg(){
 
   useEffect(() => {
     const unsubscribe = eventBusService.on('show-user-msg', (msg) =>{
-      console.log(msg)
+      // console.log(msg)
       setMsg(msg)
       if(timeoutIdRef.current){
         clearTimeout(timeoutIdRef.current)
@@ -24,7 +24,7 @@ export function UserMsg(){
   function onCloseMsg() {
     setMsg(null)
   }
-if(!msg ) return <span>loading...</span>
+if(!msg ) return <span></span>
   return <div className={"user-msg "}>
             {msg.txt}
             <button className="close-msg-btn" onClick={onCloseMsg}>x</button> 

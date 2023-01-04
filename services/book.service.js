@@ -23,8 +23,9 @@ export const bookService = {
 function query(filterBy = getDefaultFilter()) {
   return storageService.query(BOOK_KEY)
     .then(books => {
-      console.log('query from service title ,', books[0].title)
-      console.log(books[0].listPrice.amount)
+      // books.map(book => {
+      //   book.price = book.listPrice.amount
+      // console.log('Query fron book service , book.price', book.price)
 
       //FILTERS
       if (filterBy.txt) {
@@ -34,7 +35,7 @@ function query(filterBy = getDefaultFilter()) {
       if (filterBy.maxPrice) {
         books = books.filter(book => book.listPrice.amount <= filterBy.maxPrice)
       }
-      console.log(books)
+      // console.log(books)
       return books
 
     })
@@ -75,8 +76,27 @@ function save(book) {
   }
 }
 
-function getEmptyBook(title = '', maxPrice = '') {
-  return { title: '', maxPrice: '' }
+// function getEmptyBook(title = '', maxPrice = '') {
+//   return { title: '', maxPrice: '' }
+// }
+
+function getEmptyBook(title = '', subtitle = '', authors = [], publishedDate = '',
+  description = '', pageCount = '', categories = [],
+  thumbnail = '', language = '', listPrice = {}, price = '') {
+  return {
+    id: '',
+    title,
+    subtitle,
+    authors,
+    publishedDate,
+    description,
+    pageCount,
+    categories,
+    thumbnail,
+    language,
+    listPrice,
+    price,
+  }
 }
 
 function getDefaultFilter() {
@@ -552,6 +572,12 @@ function _createBooks() {
         }
       }
     ]
+    books = books.map(book => {
+      return {
+        ...book,
+        price: book.listPrice.amount
+      }
+    })
     utilService.saveToStorage(BOOK_KEY, books)
   }
   console.log(books)
