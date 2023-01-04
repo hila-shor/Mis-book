@@ -1,7 +1,11 @@
 const { useState, useEffect, useRef } = React
 const { useNavigate } = ReactRouterDOM
 
-import { googleBookService } from '../services/googleBook.service.js';
+import { GoogleList } from '../cmps/google-list.jsx';
+import { googleBookService } from '../services/googleBook.service.js'
+import { bookService } from "../services/book.service.js"
+import { showSuccessMsg , showErrorMsg  } from "../services/event-bus.service.js"
+import {utilService } from "../services/util.service.js"
 
 export function AddBook(){
 
@@ -36,6 +40,22 @@ export function AddBook(){
     
   }
 
+  function onSaveGoogleBook(ev,book){
+    // console.log('saved the book from add-book')
+    ev.preventDefault()
+    console.log("save book", book)
+    if (!book.thumbnail)book.thumbnail='assets/img/book1.jpg'
+    if(typeof book.price !== 'number') book.price=utilService.getRandomIntInclusive(48,169)
+    bookService.save(book).then((book)=>{
+        console.log('book', book)
+        showSuccessMsg('Book saved')
+        navigate('/books')
+    })
+    .catch((err) =>{
+      console.log('error', err)
+      showErrorMsg('Could not save new book')
+  })
+  }
 
   return <section className="add-book">
             <div className="add-wrapper container">
@@ -49,6 +69,8 @@ export function AddBook(){
                    {/* value={bookSearchVal.txt} */}
               </label> 
             </div>
+
+            {books && <GoogleList books={books} onSaveGoogleBook={onSaveGoogleBook}/>}
           
         </section>
       }

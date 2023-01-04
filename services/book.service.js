@@ -33,7 +33,7 @@ function query(filterBy = getDefaultFilter()) {
         books = books.filter(book => regex.test(book.title))
       }
       if (filterBy.maxPrice) {
-        books = books.filter(book => book.listPrice.amount <= filterBy.maxPrice)
+        books = books.filter(book => book.price <= filterBy.maxPrice)
       }
       // console.log(books)
       return books
@@ -69,6 +69,7 @@ function remove(bookId) {
 }
 
 function save(book) {
+  // console.log('book', book)
   if (book.id) {
     return storageService.put(BOOK_KEY, book)
   } else {
