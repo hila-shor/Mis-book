@@ -5,8 +5,9 @@ export function ReviewList({ book, onRemoveReview }){
 
   <ul className="review-list flex clean-list mail-layout">
      {book.reviews.map((review)=>
+     
               <li className=" review-li " key={review.id} >
-                <h5>Full Name: {review.name}</h5>
+                <h5>Full Name: {review.fullName}</h5>
                 <h5>Rating: {'⭐'.repeat(review.rating)}</h5>
                 <h5>Read at: {review.readAt}</h5>
                 <button className="remove-review" 

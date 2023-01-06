@@ -16,7 +16,6 @@ export function BookDetails(){
   const navigate = useNavigate()
 
   useEffect(() => {
-    console.log('Hello')
     loadBook()
 }, [params.bookId])
 
@@ -24,7 +23,6 @@ function loadBook() {
   bookService.get(params.bookId)
       .then((book) =>{
         setBook(book)
-        console.log('load book from book preview', book)
       } )
       .catch((err) => {
           console.log('Had issues in book details', err)
@@ -39,15 +37,12 @@ function loadBook() {
 
 }
 function getPublishDate(){
-  console.log(book.publishedDate)
   let currYear = new Date().getFullYear()
-  console.log(currYear)
   if (currYear - book.publishedDate > 10)return 'Vintage'
   if (currYear - book.publishedDate < 1)return 'New'
 }
 
 function getReadingLevel(){
-  console.log(book)
   var pageCount= book.pageCount
   if (pageCount>500)return "Serious"
   if (pageCount>200)return  "Descent"
@@ -109,8 +104,8 @@ function onRemoveReview(reviewId) {
             <Link className= "edit-btn" to={`/books/edit/${book.id}`}>Edit book</Link>
             <hr />
             <div className="next-prev container flex">
-              <Link className="next-book" to={`/books/${nextBookId}`}>Next book</Link>
               <Link className="prev-book" to={`/books/${prevBookId}`}>prev book</Link>
+              <Link className="next-book" to={`/books/${nextBookId}`}>Next book</Link>
           </div>
         </section>
 }

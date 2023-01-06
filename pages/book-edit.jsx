@@ -138,16 +138,6 @@ function loadBook() {
                     onChange={handleChange}
                 />
             
-              
-                {/* <label className="flex" htmlFor="amount">Price: </label>
-                <input type="number"
-                    name="amount"
-                    id="amount"
-                    placeholder="Enter price..."
-                    value={bookToEdit.listPrice.amount}
-                    onChange={handleChange}
-                />
-             */}
             
                 <label className="flex" htmlFor="currencyCode">Currency: </label>
                 <input type="text"
